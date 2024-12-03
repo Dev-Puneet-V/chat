@@ -1,31 +1,23 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
-
-const socket = io("http://localhost:3000"); // Connect to the server
-
+import { SocketContext } from "./context/socket";
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    // Listen for the 'welcome' event from the server
-    socket.on("welcome", (message) => {
-      console.log(message); // Logs: "Welcome to the server!"
-    });
-
-    // Listen for messages from the server
-    socket.on("message", (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-
-    return () => {
-      socket.off("welcome");
-      socket.off("message");
-    };
-  }, []);
+  const socket = useContext(SocketContext);
 
   const sendMessage = () => {
     // Send a message to the server
-    socket.emit("message", "Hello from the client!");
+    const newUser = {
+      username: "Puneet",
+      password: "Puneet@123",
+    };
+    socket.emit("create-user", newUser, (response) => {
+      if (response.success) {
+        console.log("User created successfully:", response.user);
+      } else {
+        console.error("Error creating user:", response.message);
+      }
+    });
   };
 
   return (

@@ -2,19 +2,19 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import MessageList from "./MessageList";
 
-const socket = io("http://localhost:3000"); // Connect to backend
+// const socket = io("http://localhost:3000"); // Connect to backend
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    socket.on("chat message", (msg) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
-    });
+    // socket.on("chat message", (msg) => {
+    //   setMessages((prevMessages) => [...prevMessages, msg]);
+    // });
 
     return () => {
-      socket.disconnect();
+      // socket.disconnect();
     };
   }, []);
 
