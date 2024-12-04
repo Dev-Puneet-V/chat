@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
-import io from "socket.io-client";
 import Chat from "./ChatComponent";
 import { SocketContext } from "./context/socket";
+import Auth from "./components/Auth";
 const App = () => {
   const socket = useContext(SocketContext);
   useEffect(() => {
@@ -21,9 +21,10 @@ const App = () => {
     }
   }, [socket]);
   return (
-    <div style={{ textAlign: "center", marginTop: "20px" }}>
-      <h1>React Chat App</h1>
-      <Chat />
+    <div>
+      <Auth />
+      {/* <h1>React Chat App</h1> */}
+      {/* <Chat /> */}
     </div>
   );
 };

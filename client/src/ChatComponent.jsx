@@ -6,7 +6,6 @@ const ChatComponent = () => {
   const socket = useContext(SocketContext);
 
   const sendMessage = () => {
-    // Send a message to the server
     const newUser = {
       username: "Puneet",
       password: "Puneet@123",
