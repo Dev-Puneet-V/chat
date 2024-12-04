@@ -3,6 +3,7 @@ import Chat from "./ChatComponent";
 import { SocketContext } from "./context/socket";
 import Auth from "./components/Auth";
 import Home from "./components/Home";
+
 const App = () => {
   const socket = useContext(SocketContext);
   useEffect(() => {
