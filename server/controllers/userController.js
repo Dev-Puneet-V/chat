@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 
-const createUser = (req: Request, res: Response): void => {
+const createUser = (req, res)=> {
   try {
     const { username, password } = req.body;
     if (!username.trim() || !password.trim()) {
     }
-  } catch (error: unknown) {
+  } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({
         message: error.message,
@@ -17,12 +17,12 @@ const createUser = (req: Request, res: Response): void => {
     }
 };
 
-const getUser = (req: Request, res: Response): void => {
+const getUser = (req, res) => {
     try {
         const { name, password } = req.body;
         if (!name.trim() || !password.trim()) {
         }
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             res.status(500).json({
                 message: error.message,

@@ -1,2 +1,2 @@
-const DB_NAME = "vidtube";
+const DB_NAME = "chatapp";
 export { DB_NAME };

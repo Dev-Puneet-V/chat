@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/mongoose.js";
+import User from "./models/user.js";
 dotenv.config({
   path: "./.env",
 });
@@ -32,10 +33,14 @@ io.on("connection", (socket) => {
   console.log("A user connected");
 
   socket.on("create-user", async (data, callback) => {
-    const { email, password, name } = data;
+    const { username, password } = data;
 
     try {
-      console.log(data);
+      const user = await User.create({
+        username: username,
+        password: password,
+      });
+      console.log(user);
       callback({ success: true });
     } catch (error) {
       // Send error response
