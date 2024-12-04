@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import Chat from "./ChatComponent";
 import { SocketContext } from "./context/socket";
 import Auth from "./components/Auth";
+import Home from "./components/Home";
 const App = () => {
   const socket = useContext(SocketContext);
   useEffect(() => {
@@ -22,9 +23,10 @@ const App = () => {
   }, [socket]);
   return (
     <div>
-      <Auth />
+      {/* <Auth /> */}
       {/* <h1>React Chat App</h1> */}
       {/* <Chat /> */}
+      <Home />
     </div>
   );
 };

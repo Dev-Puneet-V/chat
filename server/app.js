@@ -6,17 +6,22 @@ import dotenv from "dotenv";
 import connectDB from "./config/mongoose.js";
 import User from "./models/user.js";
 import userRoute from "./routes/userRoute.js";
+import authRoute from "./routes/authRoute.js";
+import cookieParser from "cookie-parser";
+import { isLoggedIn } from "./middlewares/auth.js";
 dotenv.config({
   path: "./.env",
 });
 const app = express();
 const server = http.createServer(app);
+
 connectDB()
   .then()
   .catch((err) => {
     console.log("Mongodb connection error ", err);
   });
 
+app.use(cookieParser());
 //for json
 app.use(express.json({ extended: true }));
 //Content-Type: application/x-www-form-urlencoded
@@ -36,6 +41,7 @@ const io = new Server(server, {
   },
 });
 
+// app.use(isLoggedIn);
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -61,6 +67,7 @@ io.on("connection", (socket) => {
 });
 
 app.use("/api/user", userRoute);
+app.use("/api/auth", authRoute);
 
 server.listen(3000, () => {
   console.log("Server running on http://localhost:3000");

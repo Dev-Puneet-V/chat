@@ -55,6 +55,30 @@ const Auth = () => {
           setProcessing(false);
           setResponseMessage("Unable to signup");
         }
+      } else {
+        setProcessing(true);
+        try {
+          const response = await axios.post(
+            "http://localhost:3000/api/auth/login",
+            {
+              username: username,
+              password: password,
+            },
+            {
+              "Content-Type": "application/json",
+            }
+          );
+          setProcessing(false);
+          if (response.data.success) {
+            //   setCurrentAuthState(1);
+            alert("Is logged in");
+          } else {
+            throw new Error(response.data.message || "Something went wrong");
+          }
+        } catch (error) {
+          setProcessing(false);
+          setResponseMessage(error.message || "Unable to login");
+        }
       }
     } else {
       alert("Please enter both username and password.");
