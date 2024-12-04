@@ -1,35 +1,60 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../context/socket";
+import axios from "axios";
 
 const Auth = () => {
   const [currAuthState, setCurrentAuthState] = useState(0);
   const socket = useContext(SocketContext);
-  const handleAuthStateChange = (state) => {
-    setCurrentAuthState(state);
-  };
+
   const [processing, setProcessing] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const handleSubmit = () => {
+  const [responseMessage, setResponseMessage] = useState(null);
+
+  useEffect(() => {
+    setResponseMessage(null);
+  }, [username, password, currAuthState]);
+  const handleAuthStateChange = (state) => {
+    setCurrentAuthState(state);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setResponseMessage(null);
     if (username.trim() && password.trim()) {
       if (currAuthState === 0) {
         setProcessing(true);
-        socket.emit(
-          "create-user",
-          {
-            username: username,
-            password: password,
-          },
-          (response) => {
-            setProcessing(false);
-            if (response.success) {
-              console.log("User created successfully:", response.user);
-              setCurrentAuthState(1);
-            } else {
-              console.error("Error creating user:", response.message);
-            }
+        // socket.emit(
+        //   "create-user",
+        //   {
+        //     username: username,
+        //     password: password,
+        //   },
+        //   (response) => {
+        //     setProcessing(false);
+        //     if (response.success) {
+        //       console.log("User created successfully:", response.user);
+        //       setCurrentAuthState(1);
+        //     } else {
+        //       console.error("Error creating user:", response.message);
+        //     }
+        //   }
+        // );
+        try {
+          const response = await axios.post("http://localhost:3000/api/user", {
+            username,
+            password,
+          });
+          setProcessing(false);
+          if (response.data.success) {
+            setCurrentAuthState(1);
+          } else {
+            throw new Error(response.data.message || "Something went wrong");
           }
-        );
+        } catch (error) {
+          setProcessing(false);
+          setResponseMessage("Unable to signup");
+        }
       }
     } else {
       alert("Please enter both username and password.");
@@ -69,7 +94,7 @@ const Auth = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          disabled={!(username.trim() && password.trim())}
+          disabled={!(username.trim() && password.trim()) || processing}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-md transition duration-300"
           onClick={handleSubmit}
         >
@@ -77,6 +102,9 @@ const Auth = () => {
             ? `Sign Up ${processing ? "processing..." : ""}`
             : `Sign In ${processing ? "processing..." : ""}`}
         </button>
+        {responseMessage && (
+          <p className="text-red-500 font-bold mt-[10px]">{responseMessage}</p>
+        )}
       </div>
     </div>
   );

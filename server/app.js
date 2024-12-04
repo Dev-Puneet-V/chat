@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/mongoose.js";
 import User from "./models/user.js";
+import userRoute from "./routes/userRoute.js";
 dotenv.config({
   path: "./.env",
 });
@@ -15,6 +16,11 @@ connectDB()
   .catch((err) => {
     console.log("Mongodb connection error ", err);
   });
+
+//for json
+app.use(express.json({ extended: true }));
+//Content-Type: application/x-www-form-urlencoded
+app.use(express.urlencoded());
 
 app.use(
   cors({
@@ -29,6 +35,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -52,6 +59,8 @@ io.on("connection", (socket) => {
     console.log("A user disconnected");
   });
 });
+
+app.use("/api/user", userRoute);
 
 server.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
