@@ -32,4 +32,17 @@ const createGroupController = async (req, res) => {
   }
 };
 
-export { createGroupController };
+const filterByNames = async (req, res) => {
+  try {
+    const { grpName } = req.query;
+    const groups = await Group.find({
+      name: { $regex: grpName, $options: "i" },
+    });
+    res.status(200).json({
+      success: true,
+      data: groups,
+    });
+  } catch (error) {}
+};
+
+export { createGroupController, filterByNames };
