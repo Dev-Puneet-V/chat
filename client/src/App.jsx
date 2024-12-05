@@ -1,11 +1,17 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Chat from "./ChatComponent";
 import { SocketContext } from "./context/socket";
 import Auth from "./components/Auth";
 import Home from "./components/Home";
+import CreateGroup from "./components/CreateGroup";
+import Modal from "./components/Modal";
 
 const App = () => {
   const socket = useContext(SocketContext);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const toggleLogin = () => {
+    setLoggedIn(!isLoggedIn);
+  };
   useEffect(() => {
     if (socket) {
       socket.on("connect", () => {
@@ -24,10 +30,10 @@ const App = () => {
   }, [socket]);
   return (
     <div>
-      {/* <Auth /> */}
+      {!isLoggedIn && <Auth toogleLoggedIn={toggleLogin} />}
       {/* <h1>React Chat App</h1> */}
       {/* <Chat /> */}
-      <Home />
+      {isLoggedIn && <Home />}
     </div>
   );
 };

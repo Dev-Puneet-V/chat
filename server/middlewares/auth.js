@@ -1,15 +1,17 @@
 import User from "../models/user.js";
-
-const isLoggedIn = (req, res, next) => {
+import jwt from "jsonwebtoken";
+const isLoggedIn = async (req, res, next) => {
   try {
     const token = req.cookies.token;
+    console.log(req.cookies);
     if (!token) {
       throw new Error("User not authorized");
     }
     const decoded = jwt.verify(token, "shhhhh");
-    const user = User.findOne({
+    const user = await User.findOne({
       username: decoded.username,
     });
+    console.log("user", user, decoded);
     if (!user) {
       throw new Error("User not authorized");
     }

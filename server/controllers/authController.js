@@ -20,8 +20,8 @@ const loginController = async (req, res) => {
     );
     res.cookie("token", token, {
       httpOnly: true, // Accessible only by the server
-      // secure: true, // Send only over HTTPS
-      // sameSite: "Strict", // Prevent cross-site usage
+      secure: false, // Send only over HTTPS
+      // sameSite: "None", // Prevent cross-site usage
       maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
     });
     res.status(200).json({

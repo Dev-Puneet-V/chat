@@ -7,8 +7,8 @@ import connectDB from "./config/mongoose.js";
 import User from "./models/user.js";
 import userRoute from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
+import groupRoute from "./routes/groupRoute.js";
 import cookieParser from "cookie-parser";
-import { isLoggedIn } from "./middlewares/auth.js";
 dotenv.config({
   path: "./.env",
 });
@@ -20,19 +20,18 @@ connectDB()
   .catch((err) => {
     console.log("Mongodb connection error ", err);
   });
-
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:5173"], // Allow both React development ports
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 //for json
 app.use(express.json({ extended: true }));
 //Content-Type: application/x-www-form-urlencoded
 app.use(express.urlencoded());
-
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "http://localhost:5173"], // Allow both React development ports
-    methods: ["GET", "POST"],
-  })
-);
 
 const io = new Server(server, {
   cors: {
@@ -68,6 +67,7 @@ io.on("connection", (socket) => {
 
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/group", groupRoute);
 
 server.listen(3000, () => {
   console.log("Server running on http://localhost:3000");

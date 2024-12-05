@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../context/socket";
 import axios from "axios";
 
-const Auth = () => {
+const Auth = ({ toogleLoggedIn }) => {
   const [currAuthState, setCurrentAuthState] = useState(0);
   const socket = useContext(SocketContext);
 
@@ -65,12 +65,16 @@ const Auth = () => {
               password: password,
             },
             {
-              "Content-Type": "application/json",
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              }
             }
           );
           setProcessing(false);
           if (response.data.success) {
             //   setCurrentAuthState(1);
+            toogleLoggedIn();
             alert("Is logged in");
           } else {
             throw new Error(response.data.message || "Something went wrong");
