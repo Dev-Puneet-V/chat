@@ -11,6 +11,12 @@ const userSchema = new Schema({
     required: true,
     trim: true,
   },
+  history: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Chats"
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);

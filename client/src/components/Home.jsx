@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import CreateGroup from "./CreateGroup";
 import axios from "axios";
+import ChatBox from "./ChatBox";
 
 const Home = () => {
   const [createGroupModalStatus, setCreateGroupModalStatus] = useState(false);
@@ -9,6 +10,7 @@ const Home = () => {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [currentSelectedChatBox, setCurrectSelectedChatBox] = useState(0);
   const toogleModal = () => {
     setCreateGroupModalStatus(!createGroupModalStatus);
   };
@@ -77,7 +79,11 @@ const Home = () => {
               return (
                 <div
                   key={currData._id}
-                  className="h-[50px] p-[10px] w-[95%] bg-white m-[5px] cursor-pointer font-bold"
+                  className="h-[50px] p-[10px] w-[95%] bg-white m-[5px] cursor-pointer font-bold hover:bg-indigo-500"
+                  onClick={() => {
+                    console.log(index);
+                    setCurrectSelectedChatBox(index + 1);
+                  }}
                 >
                   {currData.name}
                 </div>
@@ -90,7 +96,13 @@ const Home = () => {
             </p>
           </div>
         </div>
-        <div className="w-[calc(100%-300px)] bg-stone-300 h-[100%]"></div>
+        <div className="w-[calc(100%-300px)] bg-stone-300 h-[100%]">
+          {currentSelectedChatBox ? (
+            <ChatBox index={currentSelectedChatBox} data={filteredData} />
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
       {createGroupModalStatus && (
         <Modal handleModal={toogleModal}>

@@ -8,6 +8,7 @@ import User from "./models/user.js";
 import userRoute from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
 import groupRoute from "./routes/groupRoute.js";
+import chatRoute from "./routes/chatRoute.js";
 import cookieParser from "cookie-parser";
 dotenv.config({
   path: "./.env",
@@ -68,7 +69,7 @@ io.on("connection", (socket) => {
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/group", groupRoute);
-
+app.use("/api/chat", chatRoute);
 server.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
 });
