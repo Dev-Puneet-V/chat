@@ -28,7 +28,7 @@ const ChatBox = ({ index, data }) => {
       groupId: data[index - 1]._id,
     };
     socket.emit("new-message", messageData, (response) => {
-      messageRef.current = "";
+      messageRef.current.value = "";
       if (response.success) {
         setChatData((prevChatData) => ({
           ...prevChatData,
@@ -41,7 +41,6 @@ const ChatBox = ({ index, data }) => {
   };
 
   useEffect(() => {
-    console.log("hello");
     handleChatBox(data[index - 1]);
   }, [index]);
   return (
