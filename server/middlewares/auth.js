@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 const isLoggedIn = async (req, res, next) => {
   try {
     const token = req.cookies.token;
-    console.log(req.cookies);
     if (!token) {
       throw new Error("User not authorized");
     }

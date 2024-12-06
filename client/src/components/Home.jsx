@@ -79,7 +79,7 @@ const Home = () => {
               return (
                 <div
                   key={currData._id}
-                  className="h-[50px] p-[10px] w-[95%] bg-white m-[5px] cursor-pointer font-bold hover:bg-indigo-500"
+                  className="h-[50px] p-[10px] w-[95%] bg-white m-[5px] cursor-pointer font-bold hover:bg-indigo-500 rounded-md"
                   onClick={() => {
                     console.log(index);
                     setCurrectSelectedChatBox(index + 1);
