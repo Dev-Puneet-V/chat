@@ -24,27 +24,12 @@ const Auth = ({ toogleLoggedIn }) => {
     if (username.trim() && password.trim()) {
       if (currAuthState === 0) {
         setProcessing(true);
-        // socket.emit(
-        //   "create-user",
-        //   {
-        //     username: username,
-        //     password: password,
-        //   },
-        //   (response) => {
-        //     setProcessing(false);
-        //     if (response.success) {
-        //       console.log("User created successfully:", response.user);
-        //       setCurrentAuthState(1);
-        //     } else {
-        //       console.error("Error creating user:", response.message);
-        //     }
-        //   }
-        // );
         try {
           const response = await axios.post("http://localhost:3000/api/user", {
             username,
             password,
           });
+          console.log(response.data);
           setProcessing(false);
           if (response.data.success) {
             setCurrentAuthState(1);
@@ -68,11 +53,13 @@ const Auth = ({ toogleLoggedIn }) => {
               withCredentials: true,
               headers: {
                 "Content-Type": "application/json",
-              }
+              },
             }
           );
           setProcessing(false);
           if (response.data.success) {
+            console.log("initialize-user");
+            socket.emit("initialize-user", {});
             //   setCurrentAuthState(1);
             toogleLoggedIn();
             alert("Is logged in");

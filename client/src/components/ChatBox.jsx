@@ -5,6 +5,26 @@ const ChatBox = ({ index, data }) => {
   const [chatData, setChatData] = useState();
   const messageRef = useRef("");
   const socket = useContext(SocketContext);
+  useEffect(() => {
+    socket.on("new-message-group", async (data, ack) => {
+      const { chat, groupId, user } = data;
+      setChatData((prevChatData) => ({
+        ...prevChatData,
+        [groupId]: {
+          ...(prevChatData[groupId] || {}), // Keep other properties of the group intact
+          messages: chat?.messages ? [...chat.messages] : [], // Update the messages
+        },
+      }));
+    });
+    return () => {
+      socket.off("new-message-group");
+      console.log("Socket listener removed");
+    };
+  }, []);
+  useEffect(() => {
+    console.log(chatData ? chatData : []);
+    // [data[index - 1]?._id];
+  }, [chatData]);
   const handleChatBox = async (currData) => {
     try {
       const response = await axios.get(
@@ -12,7 +32,7 @@ const ChatBox = ({ index, data }) => {
         { withCredentials: true }
       );
       if (response.data.success) {
-        setChatData(response.data.data);
+        setChatData({ [currData?._id]: response.data.data });
       } else {
         throw new Error(response.data.message);
       }
@@ -30,10 +50,10 @@ const ChatBox = ({ index, data }) => {
     socket.emit("new-message", messageData, (response) => {
       messageRef.current.value = "";
       if (response.success) {
-        setChatData((prevChatData) => ({
-          ...prevChatData,
-          messages: [...response.data.messages],
-        }));
+        // setChatData((prevChatData) => ({
+        //   ...prevChatData,
+        //   messages: [...response.data.messages],
+        // }));
       } else {
         console.error("Error creating user:", response.message);
       }
@@ -43,30 +63,38 @@ const ChatBox = ({ index, data }) => {
   useEffect(() => {
     handleChatBox(data[index - 1]);
   }, [index]);
+
+  useEffect(() => {
+    console.log("Chat data i schanged");
+    console.log("CHAT DATA", chatData);
+  }, [chatData]);
   return (
     <div className="h-[100%] w-[100%] mt-[-10px] relative">
       <div className="h-[70px] w-[100%] bg-white pl-[10px] mt-[10px] mb-[10px] font-bold flex items-center">
-        {chatData?.group?.name}
+        {chatData && chatData[data[index - 1]?._id]?.group?.name}
       </div>
       <div className="p-[10px] h-[calc(100%-150px)] overflow-y-scroll">
-        {chatData?.messages?.map((currChat, index) => {
-          return (
-            <div
-              className="m-[10px] bg-violet-400 p-[5px] rounded-md w-auto flex justify-between pl-[10px] pr-[10px]"
-              key={currChat?._id}
-            >
-              <div>
-                <p className="font-bold text-sm">{currChat?.owner?.username}</p>
-                <p>{currChat?.content}</p>
+        {chatData &&
+          chatData[data[index - 1]?._id]?.messages?.map((currChat, index) => {
+            return (
+              <div
+                className="m-[10px] bg-violet-400 p-[5px] rounded-md w-auto flex justify-between pl-[10px] pr-[10px]"
+                key={currChat?._id}
+              >
+                <div>
+                  <p className="font-bold text-sm">
+                    {currChat?.owner?.username}
+                  </p>
+                  <p>{currChat?.content}</p>
+                </div>
+                <p className="white text-xs pt-[5px]">
+                  {currChat?.updatedAt?.split("T")[0] +
+                    " " +
+                    currChat?.updatedAt?.split("T")[1]?.split(".")[0]}
+                </p>
               </div>
-              <p className="white text-xs pt-[5px]">
-                {currChat?.updatedAt?.split("T")[0] +
-                  " " +
-                  currChat?.updatedAt?.split("T")[1]?.split(".")[0]}
-              </p>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
       <div className="absolute bottom-2 w-[100%] left-0 flex justify-center">
         <input

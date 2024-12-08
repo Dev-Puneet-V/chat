@@ -48,6 +48,47 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("A user connected");
+  socket.on("initialize-user", async (data, callback) => {
+    const cookieHeader = socket.handshake.headers.cookie;
+    if (!cookieHeader) {
+      console.log("No cookies found");
+      return;
+      callback({ success: false, message: "Unathorized access" });
+    }
+
+    const cookies = parse(cookieHeader); // Parse cookies
+    console.log("Parsed cookies:", cookies);
+
+    // Example: Access specific cookie values
+    const token = cookies.token; // Replace 'auth_token' with your cookie name
+    if (token) {
+      console.log("Auth token:", token);
+    } else {
+      console.log("Auth token not found in cookies.");
+    }
+    if (!token) {
+      // callback({ success: false, message: "Unathorized access" });
+      return;
+    }
+    if (!token) {
+      return;
+      // callback({ success: false, message: "Unathorized access" });
+    }
+    const decoded = jwt.verify(token, "shhhhh");
+    const user = await User.findOne({
+      username: decoded.username,
+    });
+    if (!user) {
+      return;
+      // callback({ success: false, message: "Unauthorized access" });
+    }
+    user?.joinedGroups?.map((currGrp) => {
+      socket.join(currGrp + "");
+      console.log("Joined grp", currGrp + "");
+    });
+    return;
+    // callback({ success: true, message: user?._id + " joined all rooms" });
+  });
 
   socket.on("new-message", async (data, callback) => {
     const { message, type, groupId } = data;
@@ -96,6 +137,23 @@ io.on("connection", (socket) => {
         },
         { new: true }
       ).populate("messages.owner", "username");
+      try {
+        console.log(groupId, "GROUP");
+        console.log(socket.adapter.rooms.get(groupId));
+        io.sockets.in(groupId).emit(
+          "new-message-group",
+          {
+            chat: chat,
+            groupId: groupId,
+            user: decoded.username,
+          },
+          (acknowledgment) => {
+            console.log(`Acknowledgment from client: ${acknowledgment}`);
+          }
+        );
+      } catch (err) {
+        console.error("Error emitting message:", err);
+      }
       callback({ success: true, data: chat });
     } catch (error) {
       // Send error response
@@ -108,6 +166,32 @@ io.on("connection", (socket) => {
   });
 });
 
+// import Group from "./models/group.js";
+// try {
+//   let userId = "67551190835115383fdf8344";
+//   let groupId = "6752aca4fc07fb661927ed2b";
+//   User.findByIdAndUpdate(
+//     new mongoose.Types.ObjectId(userId),
+//     { $push: { joinedGroups: new mongoose.Types.ObjectId(groupId) } },
+//     { new: true }
+//   )
+//     .then((user) => {
+//       console.log("User updated:", user);
+//       return Group.findByIdAndUpdate(
+//         new mongoose.Types.ObjectId(groupId),
+//         { $push: { members: new mongoose.Types.ObjectId(userId) } },
+//         { new: true }
+//       );
+//     })
+//     .then((group) => {
+//       console.log("Group updated:", group);
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error.message);
+//     });
+// } catch (error) {
+//   console.log(error.message);
+// }
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/group", groupRoute);
