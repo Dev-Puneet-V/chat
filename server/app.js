@@ -138,8 +138,6 @@ io.on("connection", (socket) => {
         { new: true }
       ).populate("messages.owner", "username");
       try {
-        console.log(groupId, "GROUP");
-        console.log(socket.adapter.rooms.get(groupId));
         io.sockets.in(groupId).emit(
           "new-message-group",
           {
