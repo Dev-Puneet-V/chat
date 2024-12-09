@@ -118,7 +118,6 @@ const Home = () => {
       <div className="w-[100%] h-[90vh] flex">
         <div className="bg-indigo-300 w-[300px] h-[100%]">
           <div className="h-[calc(100%-55px)]">
-            {/* TODO:4 - adjust these such that data is handeled for both differently */}
             {filteredData?.map((currData, index) => {
               return (
                 <div
@@ -153,7 +152,11 @@ const Home = () => {
         </div>
         <div className="w-[calc(100%-300px)] bg-stone-300 h-[100%]">
           {currentSelectedChatBox ? (
-            <ChatBox index={currentSelectedChatBox} data={filteredData} />
+            <ChatBox
+              index={currentSelectedChatBox}
+              data={filteredData}
+              type={searchBy}
+            />
           ) : (
             <></>
           )}
