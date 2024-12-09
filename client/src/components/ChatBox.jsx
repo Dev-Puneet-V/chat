@@ -146,7 +146,10 @@ const ChatBox = ({ index, data, type }) => {
       )}
       {!chatData && index && (
         <div className="h-[100%] w-[100%] mt-[-10px] relative flex justify-center items-center">
-          <button className="rounded-md bg-indigo-500" onClick={handleNewConvo}>
+          <button
+            className="rounded-xl bg-indigo-500 p-[10px] font-bold"
+            onClick={handleNewConvo}
+          >
             Send your first message
           </button>
         </div>
