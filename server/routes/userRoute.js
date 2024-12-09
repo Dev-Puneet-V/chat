@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { createUser } from "../controllers/userController.js";
+import { createUser, filterByUserName } from "../controllers/userController.js";
+import { isLoggedIn } from "../middlewares/auth.js";
 const router = Router();
 
 router.post("/", createUser);
-// router.get("/", getUser);
+router.get("/filter", isLoggedIn, filterByUserName);
 
 export default router;

@@ -51,7 +51,7 @@ const Home = () => {
       if (query.length >= 3) {
         setDebouncedQuery(query);
       }
-    }, 3000);
+    }, 1000);
 
     return () => {
       clearTimeout(handler); // Clear timeout on input change
@@ -63,15 +63,31 @@ const Home = () => {
     if (debouncedQuery) {
       const fetchData = async () => {
         try {
-          const response = await axios.get(
-            `http://localhost:3000/api/group/filter?grpName=${debouncedQuery}`,
-            { withCredentials: true }
-          );
-          if (response.data.success) {
-            console.log(response.data.data);
-            setFilteredData([...response.data.data]);
+          //TODO:1 - filter by user using searchBy
+          if (searchBy === "group") {
+            const response = await axios.get(
+              `http://localhost:3000/api/group/filter?grpName=${debouncedQuery}`,
+              { withCredentials: true }
+            );
+            if (response.data.success) {
+              console.log(response.data.data);
+              //TODO:3 - adjust this such that it is valid for user as well
+              setFilteredData([...response.data.data]);
+            } else {
+              console.error("Request failed");
+            }
           } else {
-            console.error("Request failed");
+            const response = await axios.get(
+              `http://localhost:3000/api/user/filter?userName=${debouncedQuery}`,
+              { withCredentials: true }
+            );
+            if (response.data.success) {
+              console.log(response.data.data);
+              //TODO:3 - adjust this such that it is valid for user as well
+              setFilteredData([...response.data.data]);
+            } else {
+              console.error("Request failed");
+            }
           }
         } catch (err) {
           console.error(err);
@@ -102,8 +118,7 @@ const Home = () => {
       <div className="w-[100%] h-[90vh] flex">
         <div className="bg-indigo-300 w-[300px] h-[100%]">
           <div className="h-[calc(100%-55px)]">
-            {/* TODO:2 - depending on the group privacy add if it is needed to be joined */}
-            {/* TODO:3 - on clicking on join group button, send a backend request to join it as a member */}
+            {/* TODO:4 - adjust these such that data is handeled for both differently */}
             {filteredData?.map((currData, index) => {
               return (
                 <div

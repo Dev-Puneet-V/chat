@@ -28,4 +28,34 @@ const createUser = async (req, res) => {
   }
 };
 
-export { createUser };
+const filterByUserName = async (req, res) => {
+  try {
+    const { userName } = req.query;
+    let users = await User.find({
+      username: { $regex: userName, $options: "i" },
+    });
+    users = users?.map((user, index) => {
+      return {
+        ...user,
+        isMember: true,
+        name: user.username,
+      };
+    });
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: "Error fetching user",
+      });
+    }
+  }
+};
+
+export { createUser, filterByUserName };
