@@ -16,14 +16,33 @@ const ChatBox = ({ index, data, type }) => {
         },
       }));
     });
+
     return () => {
       socket.off("new-message-group");
       console.log("Socket listener removed");
     };
   }, []);
   useEffect(() => {
-    console.log(chatData ? chatData : []);
-    // [data[index - 1]?._id];
+    const key = Object.keys(data[index - 1])[0];
+    const selectedUserId = data[key]?.group?._id;
+    console.log("DATAAAA", chatData, type);
+    if (chatData && type === "user") {
+      console.log("Inside data");
+      socket.emit("join-one-to-one", {
+        selectedUserId: selectedUserId,
+      });
+    }
+    return () => {
+      console.log("First clean up", chatData);
+      if (chatData && type === "user") {
+        console.log("Removed");
+        // socket.emit("leave-one-to-one", {
+        //   selectedUserId: selectedUserId,
+        // });
+      }
+      socket.off("new-message-group");
+      console.log("Socket listener removed");
+    };
   }, [chatData]);
   const handleChatBox = async (currData) => {
     try {
