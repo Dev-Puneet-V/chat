@@ -7,10 +7,15 @@ const ChatBox = ({ index, data, type }) => {
   const socket = useContext(SocketContext);
   useEffect(() => {
     socket.on("new-message-group", async (data, ack) => {
-      const { chat, groupId, user } = data;
+      console.log("new-message-group", data);
+      const { chat, groupId, user, user1Id, user2Id } = data;
       setChatData((prevChatData) => ({
         ...prevChatData,
-        [groupId]: {
+        [groupId ? groupId : user1Id]: {
+          ...(prevChatData[groupId] || {}), // Keep other properties of the group intact
+          messages: chat?.messages ? [...chat.messages] : [], // Update the messages
+        },
+        [groupId ? groupId : user2Id]: {
           ...(prevChatData[groupId] || {}), // Keep other properties of the group intact
           messages: chat?.messages ? [...chat.messages] : [], // Update the messages
         },
@@ -23,8 +28,12 @@ const ChatBox = ({ index, data, type }) => {
     };
   }, []);
   useEffect(() => {
+    console.log("JRIRIRKR", chatData);
+  }, [chatData]);
+  useEffect(() => {
     const key = Object.keys(data[index - 1])[0];
-    const selectedUserId = data[key]?.group?._id;
+    console.log("jfiiIRIRJJR", key, data[index - 1]);
+    const selectedUserId = data[index - 1][key];
     console.log("DATAAAA", chatData, type);
     if (chatData && type === "user") {
       console.log("Inside data");
@@ -40,7 +49,7 @@ const ChatBox = ({ index, data, type }) => {
         //   selectedUserId: selectedUserId,
         // });
       }
-      socket.off("new-message-group");
+      // socket.off("new-message-group");
       console.log("Socket listener removed");
     };
   }, [chatData]);
@@ -77,7 +86,7 @@ const ChatBox = ({ index, data, type }) => {
   const sendMessage = () => {
     const messageData = {
       message: messageRef.current?.value,
-      type: "Group",
+      type: type === "group" ? "Group" : "User",
       groupId: data[index - 1]._id,
     };
     socket.emit("new-message", messageData, (response) => {

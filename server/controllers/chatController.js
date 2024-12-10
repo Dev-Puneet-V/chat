@@ -47,7 +47,9 @@ const getChatInfoController = async (req, res) => {
       users: {
         $all: [userId, new mongoose.Types.ObjectId(chatUserId)],
       }, // both users must be present
-    }).populate("users");
+    })
+      .populate("users")
+      .populate("messages.owner", "username");
     if (!userChat) {
       return res.status(200).json({
         success: true,

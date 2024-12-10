@@ -14,6 +14,7 @@ import Chat from "./models/chat.js";
 import jwt from "jsonwebtoken";
 import { parse } from "cookie";
 import mongoose from "mongoose";
+import UserChat from "./models/userChat.js";
 dotenv.config({
   path: "./.env",
 });
@@ -122,45 +123,94 @@ io.on("connection", (socket) => {
       callback({ success: false, message: "Unathorized access" });
     }
     try {
-      const chat = await Chat.findOneAndUpdate(
-        {
-          type: type,
-          group: new mongoose.Types.ObjectId(groupId),
-        },
-        {
-          $push: {
-            messages: {
-              owner: user,
-              content: message,
+      if (type === "Group") {
+        const chat = await Chat.findOneAndUpdate(
+          {
+            type: type,
+            group: new mongoose.Types.ObjectId(groupId),
+          },
+          {
+            $push: {
+              messages: {
+                owner: user,
+                content: message,
+              },
             },
           },
-        },
-        { new: true }
-      ).populate("messages.owner", "username");
-      try {
-        io.sockets.in(groupId).emit(
-          "new-message-group",
+          { new: true }
+        ).populate("messages.owner", "username");
+        try {
+          console.log(io.sockets.adapter.rooms);
+          io.sockets.in(groupId).emit(
+            "new-message-group",
+            {
+              chat: chat,
+              groupId: groupId,
+              user: decoded.username,
+            },
+            (acknowledgment) => {
+              console.log(`Acknowledgment from client: ${acknowledgment}`);
+            }
+          );
+        } catch (err) {
+          console.error("Error emitting message:", err);
+        }
+
+        callback({ success: true, data: chat });
+      } else {
+        let secondUserId = groupId;
+        console.log("HUIO", user._id + "-" + secondUserId);
+        const chat = await UserChat.findOneAndUpdate(
           {
-            chat: chat,
-            groupId: groupId,
-            user: decoded.username,
+            users: {
+              $all: [user._id, new mongoose.Types.ObjectId(secondUserId)],
+            },
           },
-          (acknowledgment) => {
-            console.log(`Acknowledgment from client: ${acknowledgment}`);
+          {
+            $push: {
+              messages: {
+                owner: user, // The actual message content
+                content: message,
+              },
+            },
+          },
+          {
+            new: true, // Return the updated document
           }
-        );
-      } catch (err) {
-        console.error("Error emitting message:", err);
+        ).populate("messages.owner", "username");
+        try {
+          console.log(
+            io.sockets.adapter.rooms,
+            (user._id + "").localeCompare(secondUserId + "")
+          );
+          const roomId =
+            (user._id + "").localeCompare(secondUserId + "") === -1
+              ? user._id + "-" + secondUserId
+              : secondUserId + "-" + user._id;
+          console.log("ROOMID", roomId);
+          io.sockets.in(roomId).emit("new-message-group", {
+            chat: chat,
+            // groupId:
+            //   (user._id + "").localeCompare(secondUserId + "") === -1
+            //     ? user._id + ""
+            //     : secondUserId + "",
+            user1Id: user._id + "",
+            user2Id: secondUserId + "",
+            user: decoded.username,
+          });
+          callback({ success: true, data: chat });
+        } catch (err) {
+          console.error("Error emitting message:", err);
+          callback({ success: false });
+        }
       }
-      callback({ success: true, data: chat });
     } catch (error) {
       // Send error response
       callback({ success: false, message: error.message });
     }
   });
 
-  socket.on("join-one-to-one", async (data) => {
-    console.log("DATTTAA");
+  socket.on("join-one-to-one", async (data, cal) => {
     const cookieHeader = socket.handshake.headers.cookie; // Extract cookie header
     if (!cookieHeader) {
       console.log("No cookies found");
@@ -192,8 +242,11 @@ io.on("connection", (socket) => {
     }
 
     const { selectedUserId } = data;
+    console.log("HUIO", user._id + "-" + selectedUserId);
     socket.join(
-      user._id + "" < selectedUserId + "" ? user._id + "" : selectedUserId + ""
+      (user._id + "").localeCompare(selectedUserId + "") === -1
+        ? user._id + "-" + selectedUserId
+        : selectedUserId + "-" + user._id
     );
   });
   socket.on("leave-one-to-one", async (data) => {
