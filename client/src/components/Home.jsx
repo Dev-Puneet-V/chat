@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Modal from "./Modal";
 import CreateGroup from "./CreateGroup";
 import axios from "axios";
 import ChatBox from "./ChatBox";
 
 const Home = () => {
+  const queryRef = useRef("");
   const [createGroupModalStatus, setCreateGroupModalStatus] = useState(false);
   const [searchBy, setSearchBy] = useState("group");
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [currentSelectedChatBox, setCurrectSelectedChatBox] = useState(0);
+  const [currentSelectedChatBox, setCurrentSelectedChatBox] = useState(0);
   const toogleModal = () => {
     setCreateGroupModalStatus(!createGroupModalStatus);
   };
@@ -36,7 +37,7 @@ const Home = () => {
           return currData;
         });
         setFilteredData(newFilteredData);
-        setCurrectSelectedChatBox(index + 1);
+        setCurrentSelectedChatBox(index + 1);
       } else {
         console.error("Request failed");
       }
@@ -44,6 +45,13 @@ const Home = () => {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    setFilteredData([]);
+    setQuery("");
+    queryRef.current.value = "";
+    setCurrentSelectedChatBox(0);
+  }, [searchBy]);
 
   useEffect(() => {
     // Triggered after 3 seconds of inactivity
@@ -63,7 +71,6 @@ const Home = () => {
     if (debouncedQuery) {
       const fetchData = async () => {
         try {
-          //TODO:1 - filter by user using searchBy
           if (searchBy === "group") {
             const response = await axios.get(
               `http://localhost:3000/api/group/filter?grpName=${debouncedQuery}`,
@@ -102,6 +109,7 @@ const Home = () => {
       <div className="h-[70px] bg-indigo-400 w-[100%] flex justify-between items-center p-[10px]">
         <div className="flex">
           <input
+            ref={queryRef}
             className="h-[40px] w-[200px] px-4 border-2 border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out shadow-sm"
             placeholder={"Search by " + searchBy}
             onChange={(e) => setQuery(e.target.value)}
@@ -127,7 +135,7 @@ const Home = () => {
                   } rounded-md`}
                   onClick={() => {
                     if (currData?.isMember) {
-                      setCurrectSelectedChatBox(index + 1);
+                      setCurrentSelectedChatBox(index + 1);
                     }
                   }}
                 >
