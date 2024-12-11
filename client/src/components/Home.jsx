@@ -4,7 +4,7 @@ import CreateGroup from "./CreateGroup";
 import axios from "axios";
 import ChatBox from "./ChatBox";
 
-const Home = () => {
+const Home = ({ lougoutHandler }) => {
   const queryRef = useRef("");
   const [createGroupModalStatus, setCreateGroupModalStatus] = useState(false);
   const [searchBy, setSearchBy] = useState("group");
@@ -118,7 +118,7 @@ const Home = () => {
             <option>By user</option>
           </select>
         </div>
-        <button className="bg-indigo-500 rounded-xl w-[75px] p-[5px] font-bold">
+        <button onClick={lougoutHandler} className="bg-indigo-500 rounded-xl w-[75px] p-[5px] font-bold">
           Logout
         </button>
       </div>

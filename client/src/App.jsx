@@ -5,12 +5,26 @@ import Auth from "./components/Auth";
 import Home from "./components/Home";
 import CreateGroup from "./components/CreateGroup";
 import Modal from "./components/Modal";
+import axios from "axios";
 
 const App = () => {
   const socket = useContext(SocketContext);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const toggleLogin = () => {
     setLoggedIn(!isLoggedIn);
+  };
+  const handleLogOut = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/auth/logout`,
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        setLoggedIn(false);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
   useEffect(() => {
     if (socket) {
@@ -33,7 +47,7 @@ const App = () => {
       {!isLoggedIn && <Auth toogleLoggedIn={toggleLogin} />}
       {/* <h1>React Chat App</h1> */}
       {/* <Chat /> */}
-      {isLoggedIn && <Home />}
+      {isLoggedIn && <Home lougoutHandler={handleLogOut} />}
     </div>
   );
 };

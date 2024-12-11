@@ -46,7 +46,7 @@ const logoutController = async (req, res) => {
     res.clearCookie();
     res.status(200).json({
       success: true,
-      message: "Successfully logges out",
+      message: "Successfully logged out",
     });
   } catch (error) {
     if (error instanceof Error) {
