@@ -49,7 +49,6 @@ const Home = () => {
   useEffect(() => {
     setFilteredData([]);
     setQuery("");
-    queryRef.current.value = "";
     setCurrentSelectedChatBox(0);
   }, [searchBy]);
 

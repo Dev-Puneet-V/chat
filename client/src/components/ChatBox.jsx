@@ -3,6 +3,7 @@ import axios from "axios";
 import { SocketContext } from "../context/socket";
 const ChatBox = ({ index, data, type }) => {
   const [chatData, setChatData] = useState();
+  const [typingUser, setTypingUser] = useState();
   const messageRef = useRef("");
   const socket = useContext(SocketContext);
   useEffect(() => {
@@ -20,6 +21,13 @@ const ChatBox = ({ index, data, type }) => {
           messages: chat?.messages ? [...chat.messages] : [], // Update the messages
         },
       }));
+    });
+    socket.on("is-typing", (data) => {
+      const { user } = data;
+      setTypingUser(user);
+    });
+    socket.on("stopped-typing", (data) => {
+      setTypingUser();
     });
 
     return () => {
@@ -158,7 +166,22 @@ const ChatBox = ({ index, data, type }) => {
               )}
           </div>
           <div className="absolute bottom-2 w-[100%] left-0 flex justify-center">
+            {typingUser && (
+              <p className="text-xs font-bold absolute top-[-16px] left-[25px]">
+                {typingUser + " is typing..."}
+              </p>
+            )}
             <input
+              onChange={() => {
+                socket.emit("typing", {
+                  groupId: data[index - 1]?._id,
+                });
+                setTimeout(() => {
+                  socket.emit("stop-typing", {
+                    groupId: data[index - 1]?._id,
+                  });
+                }, 500);
+              }}
               ref={messageRef}
               placeholder="Enter the message..."
               className="w-[calc(100%-150px)] h-10 p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"

@@ -284,6 +284,72 @@ io.on("connection", (socket) => {
       user._id + "" < selectedUserId + "" ? user._id + "" : selectedUserId + ""
     );
   });
+  socket.on("typing", async (data, callback) => {
+    const { groupId } = data;
+    const cookieHeader = socket.handshake.headers.cookie; // Extract cookie header
+    if (!cookieHeader) {
+      console.log("No cookies found");
+      callback({ success: false, message: "Unathorized access" });
+    }
+
+    const cookies = parse(cookieHeader); // Parse cookies
+    console.log("Parsed cookies:", cookies);
+
+    // Example: Access specific cookie values
+    const token = cookies.token; // Replace 'auth_token' with your cookie name
+    if (token) {
+      console.log("Auth token:", token);
+    } else {
+      console.log("Auth token not found in cookies.");
+    }
+    if (!token) {
+      callback({ success: false, message: "Unathorized access" });
+    }
+    if (!token) {
+      callback({ success: false, message: "Unathorized access" });
+    }
+    const decoded = jwt.verify(token, "shhhhh");
+    const user = await User.findOne({
+      username: decoded.username,
+    });
+    if (!user) {
+      callback({ success: false, message: "Unathorized access" });
+    }
+    io.sockets.in(groupId).emit("is-typing", { user: user.username });
+  });
+  socket.on("stop-typing", async (data, callback) => {
+    const { groupId } = data;
+    const cookieHeader = socket.handshake.headers.cookie; // Extract cookie header
+    if (!cookieHeader) {
+      console.log("No cookies found");
+      callback({ success: false, message: "Unathorized access" });
+    }
+
+    const cookies = parse(cookieHeader); // Parse cookies
+    console.log("Parsed cookies:", cookies);
+
+    // Example: Access specific cookie values
+    const token = cookies.token; // Replace 'auth_token' with your cookie name
+    if (token) {
+      console.log("Auth token:", token);
+    } else {
+      console.log("Auth token not found in cookies.");
+    }
+    if (!token) {
+      callback({ success: false, message: "Unathorized access" });
+    }
+    if (!token) {
+      callback({ success: false, message: "Unathorized access" });
+    }
+    const decoded = jwt.verify(token, "shhhhh");
+    const user = await User.findOne({
+      username: decoded.username,
+    });
+    if (!user) {
+      callback({ success: false, message: "Unathorized access" });
+    }
+    io.sockets.in(groupId).emit("stopped-typing");
+  });
   socket.on("disconnect", () => {
     console.log("A user disconnected");
   });
