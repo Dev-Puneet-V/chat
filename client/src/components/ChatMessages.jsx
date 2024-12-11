@@ -1,8 +1,20 @@
+import { useEffect, useRef } from "react";
+
 const ChatMessages = ({ messages }) => {
+  const chatContainerRef = useRef(null);
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      const lastChild = chatContainerRef.current.lastElementChild;
+      if (lastChild) {
+        lastChild.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [messages]);
   return (
-    <div className="p-[10px] h-[calc(100%-150px)] overflow-y-scroll">
+    <div className="p-[10px] h-[calc(100%-150px)] overflow-y-scroll no-scrollbar">
       {messages?.map((currChat) => (
         <div
+          ref={chatContainerRef}
           key={currChat?._id}
           className="m-[10px] bg-violet-400 p-[5px] rounded-md w-auto flex justify-between pl-[10px] pr-[10px]"
         >
