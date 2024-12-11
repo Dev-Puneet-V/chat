@@ -48,8 +48,10 @@ const ChatBox = ({ index, data, type }) => {
     try {
       const response = await axios.get(
         type === "group"
-          ? "http://localhost:3000/api/chat/info/group/" + currData?._id
-          : "http://localhost:3000/api/chat/info/user/" + currData?._id,
+          ? "https://chat-k7m6.onrender.com/api/chat/info/group/" +
+              currData?._id
+          : "https://chat-k7m6.onrender.com/api/chat/info/user/" +
+              currData?._id,
         { withCredentials: true }
       );
       if (type === "group") {
@@ -97,7 +99,8 @@ const ChatBox = ({ index, data, type }) => {
   const handleNewConvo = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/chat/initiate/" + data[index - 1]._id,
+        "https://chat-k7m6.onrender.com/api/chat/initiate/" +
+          data[index - 1]._id,
         {},
         { withCredentials: true }
       );

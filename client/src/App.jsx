@@ -13,7 +13,7 @@ const App = () => {
   const handleLogOut = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/auth/logout`,
+        `https://chat-k7m6.onrender.com/api/auth/logout`,
         { withCredentials: true }
       );
       if (response.data.success) {

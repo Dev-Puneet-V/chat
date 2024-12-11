@@ -8,7 +8,7 @@ const CreateGroup = ({ onSuccess }) => {
     const groupName = inputRef.current.value;
     console.log(groupName);
     const response = await axios.post(
-      "http://localhost:3000/api/group",
+      "https://chat-k7m6.onrender.com/api/group",
       {
         name: groupName,
       },

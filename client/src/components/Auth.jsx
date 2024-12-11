@@ -25,10 +25,13 @@ const Auth = ({ toogleLoggedIn }) => {
       if (currAuthState === 0) {
         setProcessing(true);
         try {
-          const response = await axios.post("http://localhost:3000/api/user", {
-            username,
-            password,
-          });
+          const response = await axios.post(
+            "https://chat-k7m6.onrender.com/api/user",
+            {
+              username,
+              password,
+            }
+          );
           console.log(response.data);
           setProcessing(false);
           if (response.data.success) {
@@ -44,7 +47,7 @@ const Auth = ({ toogleLoggedIn }) => {
         setProcessing(true);
         try {
           const response = await axios.post(
-            "http://localhost:3000/api/auth/login",
+            "https://chat-k7m6.onrender.com/api/auth/login",
             {
               username: username,
               password: password,

@@ -46,7 +46,7 @@ const Home = ({ logoutHandler }) => {
       const fetchData = async () => {
         try {
             const response = await axios.get(
-              `http://localhost:3000/api/${
+              `https://chat-k7m6.onrender.com/api/${
                 searchBy === "group"
                   ? "group/filter?grpName"
                   : "user/filter?userName"

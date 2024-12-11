@@ -2,7 +2,7 @@ const Sidebar = ({ filteredData, setCurrentSelectedChatBox, toogleModal }) => {
   const handleJoinGroup = async (groupId, index) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/group/join/${groupId}`,
+        `https://chat-k7m6.onrender.com/api/group/join/${groupId}`,
         {},
         { withCredentials: true }
       );
