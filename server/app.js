@@ -285,7 +285,6 @@ io.on("connection", (socket) => {
     );
   });
   socket.on("typing", async (data, callback) => {
-    const { groupId } = data;
     const cookieHeader = socket.handshake.headers.cookie; // Extract cookie header
     if (!cookieHeader) {
       console.log("No cookies found");
@@ -314,11 +313,18 @@ io.on("connection", (socket) => {
     });
     if (!user) {
       callback({ success: false, message: "Unathorized access" });
+    }
+
+    let { groupId, type } = data;
+    if (type === "user") {
+      groupId =
+        (user._id + "").localeCompare(groupId + "") === -1
+          ? user._id + "-" + groupId
+          : groupId + "-" + user._id;
     }
     io.sockets.in(groupId).emit("is-typing", { user: user.username });
   });
   socket.on("stop-typing", async (data, callback) => {
-    const { groupId } = data;
     const cookieHeader = socket.handshake.headers.cookie; // Extract cookie header
     if (!cookieHeader) {
       console.log("No cookies found");
@@ -347,6 +353,13 @@ io.on("connection", (socket) => {
     });
     if (!user) {
       callback({ success: false, message: "Unathorized access" });
+    }
+    let { groupId, type } = data;
+    if (type === "user") {
+      groupId =
+        (user._id + "").localeCompare(groupId + "") === -1
+          ? user._id + "-" + groupId
+          : groupId + "-" + user._id;
     }
     io.sockets.in(groupId).emit("stopped-typing");
   });

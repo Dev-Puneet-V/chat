@@ -8,7 +8,6 @@ const ChatBox = ({ index, data, type }) => {
   const socket = useContext(SocketContext);
   useEffect(() => {
     socket.on("new-message-group", async (data, ack) => {
-      console.log("new-message-group", data);
       const { chat, groupId, user, user1Id, user2Id } = data;
       setChatData((prevChatData) => ({
         ...prevChatData,
@@ -36,11 +35,7 @@ const ChatBox = ({ index, data, type }) => {
     };
   }, []);
   useEffect(() => {
-    console.log("JRIRIRKR", chatData);
-  }, [chatData]);
-  useEffect(() => {
     const key = Object.keys(data[index - 1])[0];
-    console.log("jfiiIRIRJJR", key, data[index - 1]);
     const selectedUserId = data[index - 1][key];
     console.log("DATAAAA", chatData, type);
     if (chatData && type === "user") {
@@ -50,7 +45,6 @@ const ChatBox = ({ index, data, type }) => {
       });
     }
     return () => {
-      console.log("First clean up", chatData);
       if (chatData && type === "user") {
         console.log("Removed");
         // socket.emit("leave-one-to-one", {
@@ -175,10 +169,12 @@ const ChatBox = ({ index, data, type }) => {
               onChange={() => {
                 socket.emit("typing", {
                   groupId: data[index - 1]?._id,
+                  type: type,
                 });
                 setTimeout(() => {
                   socket.emit("stop-typing", {
                     groupId: data[index - 1]?._id,
+                    type: type,
                   });
                 }, 500);
               }}
