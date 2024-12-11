@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import Chat from "./ChatComponent";
 import { SocketContext } from "./context/socket";
 import Auth from "./components/Auth";
 import Home from "./components/Home";
-import CreateGroup from "./components/CreateGroup";
-import Modal from "./components/Modal";
 import axios from "axios";
 
 const App = () => {
@@ -37,17 +34,14 @@ const App = () => {
       });
 
       return () => {
-        // console.log("component unrendered");
-        // socket.disconnect();
       };
     }
   }, [socket]);
+
   return (
     <div>
       {!isLoggedIn && <Auth toogleLoggedIn={toggleLogin} />}
-      {/* <h1>React Chat App</h1> */}
-      {/* <Chat /> */}
-      {isLoggedIn && <Home lougoutHandler={handleLogOut} />}
+      {isLoggedIn && <Home logoutHandler={handleLogOut} />}
     </div>
   );
 };
