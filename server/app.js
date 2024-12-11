@@ -406,6 +406,6 @@ app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/group", groupRoute);
 app.use("/api/chat", chatRoute);
-server.listen(3000, () => {
+server.listen(process.env.PORT || 3000, () => {
   console.log("Server running on http://localhost:3000");
 });
