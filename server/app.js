@@ -15,11 +15,19 @@ import jwt from "jsonwebtoken";
 import { parse } from "cookie";
 import mongoose from "mongoose";
 import UserChat from "./models/userChat.js";
+import path from "path";
 dotenv.config({
   path: "./.env",
 });
 const app = express();
 const server = http.createServer(app);
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// Handle React routing, return all requests to index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
 
 connectDB()
   .then()
