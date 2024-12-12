@@ -13,9 +13,9 @@ const ChatInput = ({ typingUser, messageRef, sendMessage }) => {
       />
       <div
         onClick={() => {
-          if (!messageRef?.current?.value?.trim()) {
+          // if (!messageRef?.current?.value?.trim()) {
             sendMessage();
-          }
+          // }
         }}
         className="cursor-pointer flex justify-center items-center rounded-md ml-[5px] bg-indigo-500 font-bold w-[100px]"
       >

@@ -41,12 +41,7 @@ connectDB()
   });
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "https://chat-three-kohl.vercel.app",
-      "https://chat-k7m6.onrender.com/",
-    ], // Allow both React development ports
+    origin: "*", // Allow both React development ports
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -59,12 +54,7 @@ app.use(express.urlencoded());
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "https://chat-three-kohl.vercel.app",
-      "https://chat-k7m6.onrender.com/",
-    ], // Same here for Socket.IO
+    origin: "*", // Same here for Socket.IO
     methods: ["GET", "POST"],
     credentials: true,
   },

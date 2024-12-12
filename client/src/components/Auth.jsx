@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../context/socket";
+import { API_URL } from "../contant";
 import axios from "axios";
 
 const Auth = ({ toogleLoggedIn }) => {
@@ -26,7 +27,7 @@ const Auth = ({ toogleLoggedIn }) => {
         setProcessing(true);
         try {
           const response = await axios.post(
-            "https://chat-k7m6.onrender.com/api/user",
+            API_URL + "/api/user",
             {
               username,
               password,
@@ -47,7 +48,7 @@ const Auth = ({ toogleLoggedIn }) => {
         setProcessing(true);
         try {
           const response = await axios.post(
-            "https://chat-k7m6.onrender.com/api/auth/login",
+            API_URL + "/api/auth/login",
             {
               username: username,
               password: password,

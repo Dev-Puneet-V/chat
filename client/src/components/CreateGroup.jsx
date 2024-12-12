@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useRef } from "react";
-
+import { API_URL } from "../contant";
 const CreateGroup = ({ onSuccess }) => {
   const inputRef = useRef("");
   const handleCreateGroup = async () => {
@@ -8,7 +8,7 @@ const CreateGroup = ({ onSuccess }) => {
     const groupName = inputRef.current.value;
     console.log(groupName);
     const response = await axios.post(
-      "https://chat-k7m6.onrender.com/api/group",
+      API_URL + "/api/group",
       {
         name: groupName,
       },

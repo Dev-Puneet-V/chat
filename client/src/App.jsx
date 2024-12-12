@@ -3,7 +3,7 @@ import { SocketContext } from "./context/socket";
 import Auth from "./components/Auth";
 import Home from "./components/Home";
 import axios from "axios";
-
+import { API_URL } from "./contant";
 const App = () => {
   const socket = useContext(SocketContext);
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -13,7 +13,7 @@ const App = () => {
   const handleLogOut = async () => {
     try {
       const response = await axios.get(
-        `https://chat-k7m6.onrender.com/api/auth/logout`,
+        API_URL + `/api/auth/logout`,
         { withCredentials: true }
       );
       if (response.data.success) {

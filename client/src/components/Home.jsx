@@ -5,7 +5,7 @@ import axios from "axios";
 import ChatBox from "./ChatBox";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-
+import { API_URL } from "../contant";
 const Home = ({ logoutHandler }) => {
   const queryRef = useRef("");
   const [createGroupModalStatus, setCreateGroupModalStatus] = useState(false);
@@ -46,7 +46,7 @@ const Home = ({ logoutHandler }) => {
       const fetchData = async () => {
         try {
             const response = await axios.get(
-              `https://chat-k7m6.onrender.com/api/${
+              API_URL + `/api/${
                 searchBy === "group"
                   ? "group/filter?grpName"
                   : "user/filter?userName"

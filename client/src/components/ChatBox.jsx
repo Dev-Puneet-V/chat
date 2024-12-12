@@ -3,6 +3,7 @@ import axios from "axios";
 import { SocketContext } from "../context/socket";
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
+import { API_URL } from "../contant";
 const ChatBox = ({ index, data, type }) => {
   const [chatData, setChatData] = useState();
   const [typingUser, setTypingUser] = useState();
@@ -11,6 +12,7 @@ const ChatBox = ({ index, data, type }) => {
   useEffect(() => {
     socket.on("new-message-group", async (data, ack) => {
       const { chat, groupId, user, user1Id, user2Id } = data;
+      console.log("EMITTED", groupId);
       setChatData((prevChatData) => ({
         ...prevChatData,
         [groupId ? groupId : user1Id]: {
@@ -48,10 +50,8 @@ const ChatBox = ({ index, data, type }) => {
     try {
       const response = await axios.get(
         type === "group"
-          ? "https://chat-k7m6.onrender.com/api/chat/info/group/" +
-              currData?._id
-          : "https://chat-k7m6.onrender.com/api/chat/info/user/" +
-              currData?._id,
+          ? API_URL + "/api/chat/info/group/" + currData?._id
+          : API_URL + "/api/chat/info/user/" + currData?._id,
         { withCredentials: true }
       );
       if (type === "group") {
@@ -99,8 +99,7 @@ const ChatBox = ({ index, data, type }) => {
   const handleNewConvo = async () => {
     try {
       const response = await axios.post(
-        "https://chat-k7m6.onrender.com/api/chat/initiate/" +
-          data[index - 1]._id,
+        API_URL + "/api/chat/initiate/" + data[index - 1]._id,
         {},
         { withCredentials: true }
       );

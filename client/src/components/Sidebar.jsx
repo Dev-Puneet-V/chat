@@ -1,8 +1,9 @@
+import { API_URL } from "../contant";
 const Sidebar = ({ filteredData, setCurrentSelectedChatBox, toogleModal }) => {
   const handleJoinGroup = async (groupId, index) => {
     try {
       const response = await axios.post(
-        `https://chat-k7m6.onrender.com/api/group/join/${groupId}`,
+        API_URL + `/api/group/join/${groupId}`,
         {},
         { withCredentials: true }
       );
@@ -24,8 +25,8 @@ const Sidebar = ({ filteredData, setCurrentSelectedChatBox, toogleModal }) => {
     } catch (err) {
       console.error(err);
     }
-    };
-    
+  };
+
   return (
     <div className="bg-indigo-300 w-[300px] h-[100%]">
       <div className="h-[calc(100%-55px)]">
