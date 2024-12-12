@@ -27,11 +27,11 @@ dotenv.config({
 const app = express();
 const server = http.createServer(app);
 
-app.use(express.static(path.join(__dirname, "../client/dist")));
+app.use(express.static(path.join(__dirname, "./dist")));
 
 // Handle React routing, return all requests to index.html
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "./dist/index.html"));
 });
 
 connectDB()
