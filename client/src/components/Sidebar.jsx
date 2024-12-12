@@ -1,4 +1,5 @@
 import { API_URL } from "../contant";
+import axios from "axios";
 const Sidebar = ({ filteredData, setCurrentSelectedChatBox, toogleModal }) => {
   const handleJoinGroup = async (groupId, index) => {
     try {
