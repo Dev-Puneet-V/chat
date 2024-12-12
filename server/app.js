@@ -15,7 +15,12 @@ import jwt from "jsonwebtoken";
 import { parse } from "cookie";
 import mongoose from "mongoose";
 import UserChat from "./models/userChat.js";
-import path from "path";
+import * as path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+console.log("DIRNAME", __dirname);
 dotenv.config({
   path: "./.env",
 });
