@@ -164,6 +164,11 @@ io.on("connection", (socket) => {
         ).populate("messages.owner", "username");
         try {
           console.log(io.sockets.adapter.rooms);
+          console.log("LOGO", {
+            chat: chat,
+            groupId: groupId,
+            user: decoded.username,
+          });
           io.sockets.in(groupId).emit(
             "new-message-group",
             {

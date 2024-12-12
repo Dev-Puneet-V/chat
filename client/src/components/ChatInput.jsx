@@ -12,7 +12,11 @@ const ChatInput = ({ typingUser, messageRef, sendMessage }) => {
         className="w-[calc(100%-150px)] h-10 p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <div
-        onClick={sendMessage}
+        onClick={() => {
+          if (!messageRef?.current?.value?.trim()) {
+            sendMessage();
+          }
+        }}
         className="cursor-pointer flex justify-center items-center rounded-md ml-[5px] bg-indigo-500 font-bold w-[100px]"
       >
         Send
