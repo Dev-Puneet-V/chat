@@ -1,6 +1,11 @@
 import { API_URL } from "../contant";
 import axios from "axios";
-const Sidebar = ({ filteredData, setCurrentSelectedChatBox, toogleModal }) => {
+const Sidebar = ({
+  filteredData,
+  setFilteredData,
+  setCurrentSelectedChatBox,
+  toogleModal,
+}) => {
   const handleJoinGroup = async (groupId, index) => {
     try {
       const response = await axios.post(
