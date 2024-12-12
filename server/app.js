@@ -163,6 +163,8 @@ io.on("connection", (socket) => {
           { new: true }
         ).populate("messages.owner", "username");
         try {
+          const isInRoom = io.sockets.rooms.has(groupId);
+          console.log("IN IN ROOM", isInRoom, groupId);
           console.log(io.sockets.adapter.rooms);
           console.log("LOGO", {
             chat: chat,
