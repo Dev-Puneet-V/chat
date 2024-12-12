@@ -25,6 +25,7 @@ const Sidebar = ({
         });
         setFilteredData(newFilteredData);
         setCurrentSelectedChatBox(index + 1);
+        //TODO:3 - ON JOINING A NEW GROUP JOIN TO THE ROOM USING SOCKET
       } else {
         console.error("Request failed");
       }

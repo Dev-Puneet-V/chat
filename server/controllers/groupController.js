@@ -2,6 +2,8 @@ import Chat from "../models/chat.js";
 import Group from "../models/group.js";
 import User from "../models/user.js";
 import mongoose from "mongoose";
+
+//TODO:1 - JOIN AND LEAVE THE ADMIN FROM ROOM ON CREATING A NEW GROUP
 const createGroupController = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();

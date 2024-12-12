@@ -219,6 +219,10 @@ io.on("connection", (socket) => {
               ? user._id + "-" + secondUserId
               : secondUserId + "-" + user._id;
           console.log("ROOMID", roomId);
+          console.log(
+            `Clients in group ${groupId}:`,
+            io.sockets.adapter.rooms[groupId]
+          );
           io.sockets.in(roomId).emit("new-message-group", {
             chat: chat,
             // groupId:
@@ -399,32 +403,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// import Group from "./models/group.js";
-// try {
-//   let userId = "67551190835115383fdf8344";
-//   let groupId = "6752aca4fc07fb661927ed2b";
-//   User.findByIdAndUpdate(
-//     new mongoose.Types.ObjectId(userId),
-//     { $push: { joinedGroups: new mongoose.Types.ObjectId(groupId) } },
-//     { new: true }
-//   )
-//     .then((user) => {
-//       console.log("User updated:", user);
-//       return Group.findByIdAndUpdate(
-//         new mongoose.Types.ObjectId(groupId),
-//         { $push: { members: new mongoose.Types.ObjectId(userId) } },
-//         { new: true }
-//       );
-//     })
-//     .then((group) => {
-//       console.log("Group updated:", group);
-//     })
-//     .catch((error) => {
-//       console.error("Error:", error.message);
-//     });
-// } catch (error) {
-//   console.log(error.message);
-// }
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/group", groupRoute);

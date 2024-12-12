@@ -4,9 +4,7 @@ import { API_URL } from "../contant";
 const CreateGroup = ({ onSuccess }) => {
   const inputRef = useRef("");
   const handleCreateGroup = async () => {
-    console.log("Hello");
     const groupName = inputRef.current.value;
-    console.log(groupName);
     const response = await axios.post(
       API_URL + "/api/group",
       {
