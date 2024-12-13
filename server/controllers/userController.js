@@ -33,8 +33,11 @@ const filterByUserName = async (req, res) => {
     const { userName } = req.query;
     let users = await User.find({
       username: { $regex: userName, $options: "i" },
-    }).populate('');
+    }).populate("");
     users = users?.map((user, index) => {
+      if (user._id + "" === req.user._id + "") {
+        return;
+      }
       return {
         _id: user._id,
         isMember: true,

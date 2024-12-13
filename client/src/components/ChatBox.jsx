@@ -77,7 +77,6 @@ const ChatBox = ({ index, data, type }) => {
   };
 
   const sendMessage = () => {
-    console.log("MESSAGE");
     const messageData = {
       message: messageRef.current?.value,
       type: type === "group" ? "Group" : "User",
