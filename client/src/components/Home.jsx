@@ -35,7 +35,10 @@ const Home = ({ logoutHandler }) => {
     const handler = setTimeout(() => {
       if (query.length >= 3) {
         setDebouncedQuery(query);
+      } else {
+        setFilteredData([]);
       }
+      setCurrentSelectedChatBox(0);
     }, 2000);
 
     return () => {
