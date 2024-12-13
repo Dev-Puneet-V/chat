@@ -136,6 +136,17 @@ const ChatBox = ({ index, data, type }) => {
           </div>
           <ChatMessages messages={chatData[data[index - 1]?._id]?.messages} />
           <ChatInput
+            chatInputHandler={(e) => {
+              console.log(e.target.value);
+              socket.emit("typing", {
+                groupId: data[index - 1]?._id,
+              });
+              setTimeout(() => {
+                socket.emit("stop-typing", {
+                  groupId: data[index - 1]?._id,
+                });
+              }, 500);
+            }}
             typingUser={typingUser}
             messageRef={messageRef}
             sendMessage={sendMessage}
