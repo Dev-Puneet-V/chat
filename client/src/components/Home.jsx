@@ -6,7 +6,9 @@ import ChatBox from "./ChatBox";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { API_URL } from "../contant";
+import { SocketContext } from "../context/socket";
 const Home = ({ logoutHandler }) => {
+  const socket = useContext(SocketContext);
   const queryRef = useRef("");
   const [createGroupModalStatus, setCreateGroupModalStatus] = useState(false);
   const [searchBy, setSearchBy] = useState("group");
@@ -15,6 +17,7 @@ const Home = ({ logoutHandler }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [currentSelectedChatBox, setCurrentSelectedChatBox] = useState(0);
   const toogleModal = () => {
+    socket.emit("initialize-user", {});
     setCreateGroupModalStatus(!createGroupModalStatus);
   };
   const handleChange = (event) => {
@@ -45,19 +48,20 @@ const Home = ({ logoutHandler }) => {
     if (debouncedQuery) {
       const fetchData = async () => {
         try {
-            const response = await axios.get(
-              API_URL + `/api/${
+          const response = await axios.get(
+            API_URL +
+              `/api/${
                 searchBy === "group"
                   ? "group/filter?grpName"
                   : "user/filter?userName"
               }=${debouncedQuery}`,
-              { withCredentials: true }
-            );
-            if (response.data.success) {
-              setFilteredData([...response.data.data]);
-            } else {
-              console.error("Request failed");
-            }
+            { withCredentials: true }
+          );
+          if (response.data.success) {
+            setFilteredData([...response.data.data]);
+          } else {
+            console.error("Request failed");
+          }
         } catch (err) {
           console.error(err);
         }

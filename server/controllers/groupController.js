@@ -33,11 +33,15 @@ const createGroupController = async (req, res) => {
       ],
       { session }
     );
-    await User.findByIdAndUpdate(user._id, {
-      $push: {
-        joinedGroups: newGroup,
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $push: {
+          joinedGroups: newGroup,
+        },
       },
-    });
+      { session }
+    );
     await session.commitTransaction();
     session.endSession();
     if (!newGroup) {

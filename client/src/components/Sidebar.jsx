@@ -1,11 +1,14 @@
 import { API_URL } from "../contant";
 import axios from "axios";
+import { SocketContext } from "../context/socket";
+import { useContext } from "react";
 const Sidebar = ({
   filteredData,
   setFilteredData,
   setCurrentSelectedChatBox,
   toogleModal,
 }) => {
+  const socket = useContext(SocketContext);
   const handleJoinGroup = async (groupId, index) => {
     try {
       const response = await axios.post(
@@ -25,6 +28,7 @@ const Sidebar = ({
         });
         setFilteredData(newFilteredData);
         setCurrentSelectedChatBox(index + 1);
+        socket.emit("initialize-user", {});
         //TODO:3 - ON JOINING A NEW GROUP JOIN TO THE ROOM USING SOCKET
       } else {
         console.error("Request failed");
