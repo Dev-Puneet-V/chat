@@ -36,9 +36,10 @@ const filterByUserName = async (req, res) => {
     }).populate("");
     users = users
       ?.filter((user) => {
-        if (user._id + "" === req.user._id + "") {
-          return false;
+        if (user._id + "" !== req.user._id + "") {
+          return true;
         }
+        return false;
       })
       .map((user, index) => {
         return {
