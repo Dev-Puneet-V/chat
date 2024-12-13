@@ -38,6 +38,17 @@ const ChatBox = ({ index, data, type }) => {
     };
   }, []);
   useEffect(() => {
+    if (chatData) {
+      console.log(
+        "DEBUG chat data",
+        chatData,
+        index - 1,
+        data[index - 1],
+        chatData[data[index - 1]?._id]
+      );
+    }
+  }, [chatData]);
+  useEffect(() => {
     const key = Object.keys(data[index - 1])[0];
     const selectedUserId = data[index - 1][key];
     if (chatData && type === "user") {
@@ -120,7 +131,8 @@ const ChatBox = ({ index, data, type }) => {
       {chatData && index && (
         <div className="h-[100%] w-[100%] mt-[-10px] relative">
           <div className="h-[70px] w-[100%] bg-white pl-[10px] mt-[10px] mb-[10px] font-bold flex items-center">
-            {chatData && chatData[data[index - 1]?._id]?.group?.name}
+            {(chatData && data[index - 1]?.name) ||
+              chatData[data[index - 1]?._id]?.group?.name}
           </div>
           <ChatMessages messages={chatData[data[index - 1]?._id]?.messages} />
           <ChatInput
