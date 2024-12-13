@@ -34,16 +34,19 @@ const filterByUserName = async (req, res) => {
     let users = await User.find({
       username: { $regex: userName, $options: "i" },
     }).populate("");
-    users = users?.map((user, index) => {
-      if (user._id + "" === req.user._id + "") {
-        return;
-      }
-      return {
-        _id: user._id,
-        isMember: true,
-        name: user.username,
-      };
-    });
+    users = users
+      ?.filter((user) => {
+        if (user._id + "" === req.user._id + "") {
+          return false;
+        }
+      })
+      .map((user, index) => {
+        return {
+          _id: user._id,
+          isMember: true,
+          name: user.username,
+        };
+      });
     res.status(200).json({
       success: true,
       data: users,
