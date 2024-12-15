@@ -65,4 +65,53 @@ const filterByUserName = async (req, res) => {
   }
 };
 
-export { createUser, filterByUserName };
+const getUserHistory = async (req, res) => {
+  try {
+    const user = req.user;
+    const groupData = await User.findById(user._id)
+      .populate("joinedGroups")
+      .populate({
+        path: "history",
+        select: "users",
+        populate: {
+          path: "users",
+          match: { _id: { $ne: req.user._id } },
+          select: "username _id",
+        },
+      });
+    const data = {};
+    data["group"] = groupData?.joinedGroups?.map((currGrp) => {
+      //LEARNT SOMETHING NEW
+      const groupObject = currGrp.toObject();
+      return {
+        ...groupObject,
+        isMember: true,
+      };
+    });
+    data["user"] = groupData?.history?.map((currUser) => {
+      const groupObject = currUser.toObject();
+      return {
+        name: groupObject.users[0].username,
+        _id: groupObject.users[0]._id,
+        isMember: true,
+      };
+      return currUser;
+    });
+    res.status(200).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: "Error fetching user",
+      });
+    }
+  }
+};
+
+export { createUser, filterByUserName, getUserHistory };

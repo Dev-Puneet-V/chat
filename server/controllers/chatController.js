@@ -109,7 +109,13 @@ const userInitialHandshake = async (req, res) => {
       ],
       messages: [],
     });
-    res.status(200).json({
+
+    chatUser.history.push(userChat);
+    await chatUser.save();
+    const user = await User.findById(req.user._id);
+    user.history.push(userChat);
+    await user.save();
+    await chatUser.res.status(200).json({
       success: true,
       data: {
         group: {

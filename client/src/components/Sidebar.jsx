@@ -39,7 +39,7 @@ const Sidebar = ({
 
   return (
     <div className="bg-indigo-300 w-[300px] h-[100%]">
-      <div className="h-[calc(100%-55px)]">
+      <div className="h-[calc(100%-65px)] overflow-y-scroll no-scrollbar">
         {filteredData?.map((currData, index) => {
           return (
             <div
@@ -66,7 +66,7 @@ const Sidebar = ({
           );
         })}
       </div>
-      <div className="hover:bg-indigo-600 cursor-pointer h-[50px] w-[80%] m-auto rounded-[10px] bg-indigo-500 flex justify-center items-center">
+      <div className="mt-[10px] hover:bg-indigo-600 cursor-pointer h-[50px] w-[80%] m-auto rounded-[10px] bg-indigo-500 flex justify-center items-center">
         <p className="font-bold mb-[5px]" onClick={toogleModal}>
           Create a group +
         </p>

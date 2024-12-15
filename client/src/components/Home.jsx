@@ -16,6 +16,7 @@ const Home = ({ logoutHandler }) => {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [currentSelectedChatBox, setCurrentSelectedChatBox] = useState(0);
+  const [history, setHistory] = useState({});
   const toogleModal = () => {
     socket.emit("initialize-user", {});
     setCreateGroupModalStatus(!createGroupModalStatus);
@@ -23,7 +24,28 @@ const Home = ({ logoutHandler }) => {
   const handleChange = (event) => {
     setSearchBy(event.target.value.split(" ")[1]);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (filteredData?.length === 0) {
+          const response = await axios.get(`${API_URL}/api/user/history`, {
+            withCredentials: true,
+          });
+          if (response.data.success) {
+            setHistory({
+              ...history,
+              ...response.data.data,
+            });
+            // setFilteredData([...response.data.data["group"]]);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error); // Log the error for debugging
+      }
+    };
 
+    fetchData();
+  }, []);
   useEffect(() => {
     setFilteredData([]);
     setQuery("");
@@ -31,12 +53,18 @@ const Home = ({ logoutHandler }) => {
   }, [searchBy]);
 
   useEffect(() => {
+    if (query.length === 0 && history[searchBy])
+      setFilteredData([...history[searchBy]]);
+  }, [query, history, searchBy]);
+
+  useEffect(() => {
     // Triggered after 2 seconds of inactivity
     const handler = setTimeout(() => {
       if (query.length >= 3) {
         setDebouncedQuery(query);
       } else {
-        setFilteredData([]);
+        // fetchData();
+        // setFilteredData([]);
       }
       setCurrentSelectedChatBox(0);
     }, 2000);

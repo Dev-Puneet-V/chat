@@ -11,14 +11,16 @@ const userSchema = new Schema({
     required: true,
     trim: true,
   },
-  joinedGroups: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Groups"
-  }],
+  joinedGroups: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group",
+    },
+  ],
   history: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Chats"
+      ref: "UserChat",
     },
   ],
 });
