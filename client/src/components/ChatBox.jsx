@@ -49,9 +49,15 @@ const ChatBox = ({ index, data, type }) => {
     }
   }, [chatData]);
   useEffect(() => {
-    const key = Object.keys(data[index - 1])[0];
-    const selectedUserId = data[index - 1][key];
+    // const key = Object.keys(data[index - 1])[0];
+    const selectedUserId = data[index - 1]["_id"];
     if (chatData && type === "user") {
+      console.log(
+        "JOIN ONE TO ONE",
+        selectedUserId,
+        data[index - 1],
+        Object.keys(data[index - 1])[0]
+      );
       socket.emit("join-one-to-one", {
         selectedUserId: selectedUserId,
       });
