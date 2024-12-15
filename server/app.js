@@ -356,7 +356,10 @@ io.on("connection", (socket) => {
         (user._id + "").localeCompare(groupId + "") === -1
           ? user._id + "-" + groupId
           : groupId + "-" + user._id;
+      console.log("USER is this", data, groupId);
     }
+
+    console.log("USER is this", type, data, groupId);
     io.sockets.in(groupId).emit("is-typing", { user: user.username });
   });
   socket.on("stop-typing", async (data, callback) => {

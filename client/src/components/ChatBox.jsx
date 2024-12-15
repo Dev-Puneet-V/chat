@@ -146,10 +146,12 @@ const ChatBox = ({ index, data, type }) => {
               console.log(e.target.value);
               socket.emit("typing", {
                 groupId: data[index - 1]?._id,
+                type: type,
               });
               setTimeout(() => {
                 socket.emit("stop-typing", {
                   groupId: data[index - 1]?._id,
+                  type: type,
                 });
               }, 500);
             }}
