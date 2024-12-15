@@ -2,12 +2,16 @@ import { API_URL } from "../contant";
 import axios from "axios";
 import { SocketContext } from "../context/socket";
 import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilteredData } from "../store/dataSlice";
 const Sidebar = ({
-  filteredData,
-  setFilteredData,
+  // filteredData,
+  // setFilteredData,
   setCurrentSelectedChatBox,
   toogleModal,
 }) => {
+  const dispatch = useDispatch();
+  const { filteredData, status } = useSelector((state) => state.data);
   const socket = useContext(SocketContext);
   const handleJoinGroup = async (groupId, index) => {
     try {
@@ -26,7 +30,7 @@ const Sidebar = ({
           }
           return currData;
         });
-        setFilteredData(newFilteredData);
+        dispatch(setFilteredData(newFilteredData));
         setCurrentSelectedChatBox(index + 1);
         socket.emit("initialize-user", {});
       } else {

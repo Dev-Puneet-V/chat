@@ -4,7 +4,11 @@ import { SocketContext } from "../context/socket";
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 import { API_URL } from "../contant";
+import { useDispatch, useSelector } from "react-redux";
+import { setHistory } from "../store/dataSlice";
 const ChatBox = ({ index, data, type }) => {
+  const dispatch = useDispatch();
+  const { history } = useSelector((state) => state.data);
   const [chatData, setChatData] = useState();
   const [typingUser, setTypingUser] = useState();
   const messageRef = useRef("");
@@ -120,6 +124,15 @@ const ChatBox = ({ index, data, type }) => {
         { withCredentials: true }
       );
       if (response.data.success) {
+        let newHistory = {
+          ...history,
+          user: [
+            ...history["user"],
+            { ...response.data.data?.group, isMember: true },
+          ],
+        };
+        console.log(newHistory);
+        dispatch(setHistory(newHistory));
         setChatData({ [data[index - 1]._id]: response.data.data });
       }
     } catch (error) {

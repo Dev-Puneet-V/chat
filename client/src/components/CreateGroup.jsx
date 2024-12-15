@@ -1,7 +1,11 @@
 import axios from "axios";
 import { useRef } from "react";
 import { API_URL } from "../contant";
+import { useDispatch, useSelector } from "react-redux";
+import { setHistory } from "../store/dataSlice";
 const CreateGroup = ({ onSuccess }) => {
+  const dispatch = useDispatch();
+  const { history } = useSelector((state) => state.data);
   const inputRef = useRef("");
   const handleCreateGroup = async () => {
     const groupName = inputRef.current.value;
@@ -18,6 +22,15 @@ const CreateGroup = ({ onSuccess }) => {
     if (response.data.success) {
       console.log("group successfully created");
       onSuccess();
+      let newHistory = {
+        ...history,
+        group: [
+          ...history["group"],
+          { ...response.data.data[0], isMember: true },
+        ],
+      };
+      console.log(newHistory);
+      dispatch(setHistory(newHistory));
     } else {
       //Handle error
       console.log(response.data.message);

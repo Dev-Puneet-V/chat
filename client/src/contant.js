@@ -7,6 +7,6 @@ const config = {
   },
 };
 
-const ENV = "production" || "development"; // Defaults to 'development'
+const ENV = process.env.NODE_ENV || "development"; // Defaults to 'development'
 export const API_URL = config[ENV].API_URL;
 // NODE_ENV=production npm run build

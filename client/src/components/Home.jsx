@@ -6,17 +6,22 @@ import ChatBox from "./ChatBox";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { API_URL } from "../contant";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHistory } from "../store/dataSlice";
 import { SocketContext } from "../context/socket";
+import { setHistory, setFilteredData } from "../store/dataSlice";
 const Home = ({ logoutHandler }) => {
+  const dispatch = useDispatch();
   const socket = useContext(SocketContext);
   const queryRef = useRef("");
   const [createGroupModalStatus, setCreateGroupModalStatus] = useState(false);
   const [searchBy, setSearchBy] = useState("group");
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
+  // const [filteredData, setFilteredData] = useState([]);
   const [currentSelectedChatBox, setCurrentSelectedChatBox] = useState(0);
-  const [history, setHistory] = useState({});
+  // const [history, setHistory] = useState({});
+  const { history, filteredData, status } = useSelector((state) => state.data);
   const toogleModal = () => {
     socket.emit("initialize-user", {});
     setCreateGroupModalStatus(!createGroupModalStatus);
@@ -25,36 +30,37 @@ const Home = ({ logoutHandler }) => {
     setSearchBy(event.target.value.split(" ")[1]);
   };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (filteredData?.length === 0) {
-          const response = await axios.get(`${API_URL}/api/user/history`, {
-            withCredentials: true,
-          });
-          if (response.data.success) {
-            setHistory({
-              ...history,
-              ...response.data.data,
-            });
-            // setFilteredData([...response.data.data["group"]]);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error); // Log the error for debugging
-      }
-    };
-
-    fetchData();
+    // const fetchData = async () => {
+    // try {
+    //   if (filteredData?.length === 0) {
+    //     const response = await axios.get(`${API_URL}/api/user/history`, {
+    //       withCredentials: true,
+    //     });
+    //     if (response.data.success) {
+    //       setHistory({
+    //         ...history,
+    //         ...response.data.data,
+    //       });
+    //       // setFilteredData([...response.data.data["group"]]);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching data:", error); // Log the error for debugging
+    // }
+    // };
+    // fetchData();
+    dispatch(fetchHistory());
   }, []);
   useEffect(() => {
-    setFilteredData([]);
+    dispatch(setFilteredData([]));
     setQuery("");
     setCurrentSelectedChatBox(0);
   }, [searchBy]);
 
   useEffect(() => {
-    if (query.length === 0 && history[searchBy])
-      setFilteredData([...history[searchBy]]);
+    if (query.length === 0 && history[searchBy]) {
+      dispatch(setFilteredData(history[searchBy]));
+    }
   }, [query, history, searchBy]);
 
   useEffect(() => {
@@ -89,7 +95,7 @@ const Home = ({ logoutHandler }) => {
             { withCredentials: true }
           );
           if (response.data.success) {
-            setFilteredData([...response.data.data]);
+            dispatch(setFilteredData([...response.data.data]));
           } else {
             console.error("Request failed");
           }
@@ -119,7 +125,7 @@ const Home = ({ logoutHandler }) => {
           filteredData={filteredData}
           setCurrentSelectedChatBox={setCurrentSelectedChatBox}
           toogleModal={toogleModal}
-          setFilteredData={setFilteredData}
+          // setFilteredData={setFilteredData}
         />
         <div className="w-[calc(100%-300px)] bg-stone-300 h-[100%]">
           {currentSelectedChatBox ? (
